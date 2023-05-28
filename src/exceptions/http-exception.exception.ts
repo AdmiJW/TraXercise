@@ -1,6 +1,7 @@
 
 import { HttpStatusCode } from '@/enums/http-status-code.enum';
 
+export { HttpStatusCode } from '@/enums/http-status-code.enum';
 
 
 interface HttpExceptionParams {

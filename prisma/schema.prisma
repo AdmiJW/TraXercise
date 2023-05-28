@@ -14,11 +14,13 @@ datasource db {
 
 model ExerciseRecord {
   id       String       @id @unique @default(cuid())
-  name     String
+  name     String       
   type     ExerciseType
   activity String
   duration Int
   date     DateTime
+
+  @@index([name], type: Hash)
 }
 
 enum ExerciseType {

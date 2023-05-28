@@ -2,7 +2,7 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
 
-import { errorHandlerMiddleware } from '@/middlewares/error-handler.middleware';
+import { errorHandler } from '@/middlewares/error-handler.middleware';
 
 import { apiRouter } from './routes/apis';
 import { viewRouter } from './routes/views';
@@ -20,6 +20,8 @@ const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 // 2. Static folder
 app.use(express.static('public'));
+// 3. Views folder
+app.set('views', 'views');
 
 
 // Middlewares
@@ -35,7 +37,7 @@ app.use('/', viewRouter);
 
 
 // Error handler middleware. This should be the last middleware.
-app.use(errorHandlerMiddleware);
+app.use(errorHandler);
 
 
 
