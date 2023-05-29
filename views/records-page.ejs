@@ -14,6 +14,9 @@
     <!-- Container min height 100 vh : To push footer to the bottom -->
     <div class="min-vh-100 d-flex flex-column">
 
+        <!-- Loading Modal -->
+        <%- include('partials/_loading-modal.ejs') %>
+
         <!-- Navbar -->
         <%- include('partials/_navbar.ejs') %>
 
@@ -33,7 +36,6 @@
                 <p>Search!</p>
             </main>
         </div>
-
     </div>
 
     <%- include('partials/_footer.ejs') %>
