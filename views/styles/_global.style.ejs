@@ -1,0 +1,50 @@
+
+<style>
+
+    html {
+        --primary-color: #3f51b5;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+        font-family: 'Lato', 'Roboto', sans-serif;
+    }
+
+
+
+    /* Hover underline effect class */
+    .hover-underline {
+        display: inline-block;
+        position: relative;
+    }
+
+    .hover-underline.primary {
+        --underline-color: var(--primary-color);
+    }
+
+    .hover-underline.white {
+        --underline-color: #fff;
+    }
+
+    .hover-underline::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: var(--underline-color);
+        transform-origin: bottom right;
+        transition: transform 0.25s ease-out;
+    }
+
+    .hover-underline:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+
+</style>
