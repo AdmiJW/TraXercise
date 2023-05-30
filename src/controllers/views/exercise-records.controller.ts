@@ -9,9 +9,9 @@ export async function createExerciseRecordPage(
     response: Response, 
     next: NextFunction,
 ) {
-    response.render('records-page', {
-        title: 'TraXercise - Create Record',
-    });
+    response.render("track-page", {
+		title: "TraXercise - Create Record",
+	});
 }
 
 
@@ -20,9 +20,9 @@ export async function viewExerciseRecordsPage(
     response: Response,
     next: NextFunction,
 ) {
-    response.render('records-page', {
-        title: 'TraXercise - My Records',
-    });
+    response.render("records-page", {
+		title: "TraXercise - My Records",
+	});
 }
 
 
@@ -31,7 +31,7 @@ export async function viewExerciseRecordsAnalysisPage(
     response: Response,
     next: NextFunction,
 ) {
-    response.render('records-page', {
+    response.render('analysis-page', {
         title: 'TraXercise - Analysis',
     });
 }

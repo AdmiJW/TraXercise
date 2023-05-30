@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <%- include('partials/_head.ejs') %>
+
+            <!-- Include styles -->
+            <%- include('styles/_global.style.ejs') %>
+                <%- include('styles/_records-page.style.ejs') %>
+
+                    <!-- Include custom scripts -->
+    </head>
+
+    <body>
+
+        <!-- Container min height 100 vh : To push footer to the bottom -->
+        <div class="min-vh-100 d-flex flex-column">
+
+            <!-- Loading Modal -->
+            <%- include('partials/_loading-modal.ejs') %>
+
+                <!-- Navbar -->
+                <%- include('partials/_navbar.ejs') %>
+
+                    <!-- Content -->
+                    <div class="flex-grow-1 d-flex justify-content-center">
+                        <main class="p-3 m-3 border rounded-3 shadow-sm" style="
+                    width: clamp(300px, 100%, 800px);
+                    background-color: rgba(255, 255, 255, 0.95);
+                ">
+                            <h1 class="text-center px-3">My Tracker 📊</h1>
+                            <hr class="mx-4">
+
+                            <p>Enter your handle: [ ]</p>
+                            <p>Search!</p>
+                        </main>
+                    </div>
+        </div>
+
+        <%- include('partials/_footer.ejs') %>
+    </body>
+
+</html>
