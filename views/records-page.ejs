@@ -9,6 +9,7 @@
 
 		<!-- Include custom scripts -->
 	</head>
+
 	<body>
 		<!-- Container min height 100 vh : To push footer to the bottom -->
 		<div class="min-vh-100 d-flex flex-column">
@@ -58,9 +59,7 @@
 						</div>
 					</form>
 
-					<div id="resultSection" style="display: none">
-                       
-                    </div>
+					<div id="resultSection" style="display: none"></div>
 				</main>
 			</div>
 		</div>
@@ -73,74 +72,97 @@
 			'<div class="card mt-3">' +
 			'<h3 class="card-title text-center py-2"></h3>' +
 			'<div id="exerciseData" class="w-100 d-flex align-content-start flex-wrap p-4">' +
-            '</div>' +
+			"</div>" +
 			"</div>" +
 			"</div>";
 
-	$(document).ready(function () {
-            $("#view-form").submit(function (event) {
-                showLoading();
-                event.preventDefault();
-                let name = $("#name").val();
+		function deleteExercise(id) {
+			console.log("Deleting exercise with id: ");
+			console.log(id);
+			$.ajax({
+				url: "/api/exercise-records/" + id,
+				type: "DELETE",
+				contentType: "application/json",
+				success: function (data) {
+					console.log(data);
+					$("#resultSection").empty();
+					$("#view-form").submit();
+				},
+				error: function (error) {
+					console.log(error);
+				},
+			});
+		}
 
-                $.ajax({
-                    url: "/api/exercise-records/" + name,
-                    type: "GET",
-                    contentType: "application/json",
-                    success: function (data) {
-                        $("#resultSection").show();
-                        $("#resultSection").empty();
+		$(document).ready(function () {
+			$("#view-form").submit(function (event) {
+				showLoading();
+				event.preventDefault();
+				let name = $("#name").val();
 
-                        if (data.length == 0) {
-                            const no_records_card = $(result_card);
-                            no_records_card
-                                .find(".card-title")
-                                .text("No records found for " + name);
-                            $("#resultSection").append(no_records_card);
-                            hideLoading();
-                            return;
-                        }
-                        console.log(data);
-                        const records_card = $(result_card);
-                        records_card.find(".card-title").text("💾 " + data[0].name + "'s Exercise Records 💾");
+				$.ajax({
+					url: "/api/exercise-records/" + name,
+					type: "GET",
+					contentType: "application/json",
+					success: function (data) {
+						$("#resultSection").show();
+						$("#resultSection").empty();
 
+						if (data.length == 0) {
+							const no_records_card = $(result_card);
+							no_records_card
+								.find(".card-title")
+								.text("No records found for " + name);
+							$("#resultSection").append(no_records_card);
+							hideLoading();
+							return;
+						}
+						console.log(data);
+						const records_card = $(result_card);
+						records_card
+							.find(".card-title")
+							.text(
+								"💾 " + data[0].name + "'s Exercise Records 💾"
+							);
 
-                        data.forEach(function (record) {
-                            
-                            records_card
-                                .find("#exerciseData")
-                                .append(
-                                    
-                                    '<div class="w-25 card-body text-dark shadow bg-secondary rounded p-2 m-2">' +
-                                    '<h5 class="card-title">' + new Date(record.date).toISOString().substring(0, 10) + '</h5>' +
+						data.forEach(function (record) {
+							records_card
+								.find("#exerciseData")
+								.append(
+									'<div class="w-25 card-body text-dark shadow bg-success rounded p-2 m-2">' +
+										'<h5 class="card-title">' +
+										new Date(record.date)
+											.toISOString()
+											.substring(0, 10) +
+										"</h5>" +
+										"<p><strong>Exercise:</strong> " +
+										record.activity +
+										"<br>" +
+										"<strong>Exercise Type:</strong>" +
+										record.type +
+										"<br>" +
+										"<strong>Duration:</strong>" +
+										record.duration +
+										" minutes" +
+										"</p>" +
+										'<button type="button" class="btn btn-danger w-100 mt-2" onclick="deleteExercise(\'' +
+										record.id +
+										"')\"> Delete 🗒️</button>" +
+										"</div>"
+								);
+							$("#resultSection").append(records_card);
+						});
 
-                                    "<p><strong>Exercise:</strong> " +
-                                    record.activity +
-                                    "<br>" +
-                                    "<strong>Exercise Type:</strong>" +
-                                    record.type +
-                                    "<br>" +
-                                    "<strong>Duration:</strong>" +
-                                    record.duration +
-                                    " minutes" +
-                                    "</p>"+
-                                    "</div>"
-                              
-                                );
-                            $("#resultSection").append(records_card);
-                        });
-
-                        hideLoading();
-                    },
-                    error: function (err) {
-                        console.error("Error:", err);
-                        $("#resultCard").hide();
-                        alert("Error: " + err.message);
-                        setTimeout(hideLoading, 5000);
-                    },
-                });
-            });
-        });
-
+						hideLoading();
+					},
+					error: function (err) {
+						console.error("Error:", err);
+						$("#resultCard").hide();
+						alert("Error: " + err.message);
+						setTimeout(hideLoading, 5000);
+					},
+				});
+			});
+		});
 	</script>
 </html>
