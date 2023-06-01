@@ -38,14 +38,14 @@
 								class="card-body text-dark shadow bg-light rounded"
 							>
 								<h4 class="card-title">Step 1️⃣ :</h4>
-								<p class="card-text">Give us you name:</p>
+								<p class="card-text ">Give us you name:</p>
 								<input
 									type="text"
 									class="form-control"
 									name="name"
 									id="name"
 									aria-describedby="nameDesc"
-									value="Ethan"
+									required
 								/>
 								<div id="nameDesc" class="form-text">
 									Your name will help us identify your
@@ -131,7 +131,7 @@
 									class="form-control mb-4"
 									name="exerciseName"
 									id="activityName"
-									value=""
+								required
 								/>
 
 								<label for="activityDuration" class="form-label"
@@ -143,6 +143,7 @@
 									name="exerciseDuration"
 									id="activityDuration"
 									value="0"
+									required
 								/>
 
 								<label for="activityDate" class="form-label"
@@ -153,6 +154,7 @@
 									class="form-control mb-4"
 									name="exerciseDate"
 									id="activityDate"
+									required
 								/>
 							</div>
 						</div>
@@ -188,7 +190,8 @@
 
 		$(document).ready(function () {
 			$("#tracker-form").submit(function (event) {
-				showLoading(), event.preventDefault();
+				showLoading();
+				event.preventDefault();
 				let formData = $(this).serializeArray();
 				let data = {
 					name: formData[0].value,
@@ -207,6 +210,10 @@
 
 					success: function (response) {
 						hideLoading();
+						console.log(response);
+							setTimeout(() => {
+								location.reload();
+							}, 1000);
 					},
 					error: function (err) {
 						console.log(err);
