@@ -5,8 +5,8 @@
 
 		<!-- Include styles -->
 		<%- include("styles/_global.style.ejs") %> <%-
-		include("styles/_records-page.style.ejs") %>
-		<%- include('styles/track-page.style.ejs') %>
+		include("styles/_records-page.style.ejs") %> <%-
+		include('styles/track-page.style.ejs') %>
 
 		<!-- Include custom scripts -->
 	</head>
@@ -38,7 +38,7 @@
 								class="card-body text-dark shadow bg-light rounded"
 							>
 								<h4 class="card-title">Step 1️⃣ :</h4>
-								<p class="card-text ">Give us you name:</p>
+								<p class="card-text">Give us you name:</p>
 								<input
 									type="text"
 									class="form-control"
@@ -53,7 +53,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="card mb-3 ">
+						<div class="card mb-3">
 							<div
 								class="card-body text-dark shadow bg-light rounded"
 							>
@@ -61,55 +61,73 @@
 								<p class="card-text">
 									Select your exercise type
 								</p>
-								<div class="mb-3 d-flex justify-content-around">
-									<div>
+								<div class="mb-4 d-flex justify-content-around">
+									<div class="text-center">
 										<label>
 											<img
 												src="/images/aerobic.gif"
 												class="rounded-circle clickable-image"
-												style="height: 100%; width: 100%; object-fit: contain"
-												/>
-												<input
+												style="
+													height: 100%;
+													width: 100%;
+													object-fit: contain;
+												"
+												alt="Aerobic Exercise"
+											/>
+											<input
 												name="exerciseType"
 												type="radio"
 												class="btn-check"
 												id="aerobicType"
 												value="AEROBIC"
 												checked
-												/>
-											</label>
+											/>
+										</label>
+										<p>Aerobic</p>
 									</div>
-									<div>
+									<div class="text-center">
 										<label>
 											<img
 												src="/images/anaerobic.gif"
 												class="rounded-circle clickable-image"
-												style="height: 100%; width: 100%; object-fit: contain"
+												style="
+													height: 100%;
+													width: 100%;
+													object-fit: contain;
+												"
+												alt="Anaerobic Exercise"
 											/>
 											<input
-											name="exerciseType"
-											type="radio"
-											class="btn-check"
-											id="anerobicType"
-											value="ANAEROBIC"
+												name="exerciseType"
+												type="radio"
+												class="btn-check"
+												id="anerobicType"
+												value="ANAEROBIC"
 											/>
 										</label>
+										<p>Anaerobic</p>
 									</div>
-									<div >
+									<div class="text-center">
 										<label>
 											<img
 												src="/images/hybrid.gif"
 												class="rounded-circle clickable-image"
-												style="height: 100%; width: 100%; object-fit: contain"
+												style="
+													height: 100%;
+													width: 100%;
+													object-fit: contain;
+												"
+												alt="Hybrid Exercise"
 											/>
 											<input
-											name="exerciseType"
-											type="radio"
-											class="btn-check"
-											id="hybridType"
-											value="HYBRID"
+												name="exerciseType"
+												type="radio"
+												class="btn-check"
+												id="hybridType"
+												value="HYBRID"
 											/>
 										</label>
+										<p>Hybrid</p>
 									</div>
 								</div>
 							</div>
@@ -131,11 +149,11 @@
 									class="form-control mb-4"
 									name="exerciseName"
 									id="activityName"
-								required
+									required
 								/>
 
 								<label for="activityDuration" class="form-label"
-									>Exercise Duration:</label
+									>Exercise Duration (Minutes):</label
 								>
 								<input
 									type="number"
@@ -158,11 +176,8 @@
 								/>
 							</div>
 						</div>
-						<button
-							type="submit"
-							class="form__submit btn btn-primary w-100 p-2"
-						>
-							Submit
+						<button type="submit" class="btn btn-primary w-100 p-2">
+							Submit Record 📝
 						</button>
 					</form>
 				</main>
@@ -182,7 +197,11 @@
 		clickable_images.forEach((image) => {
 			image.addEventListener("click", () => {
 				clickable_images.forEach((image) => {
-					image.classList.remove("border", "border-3", "border-secondary");
+					image.classList.remove(
+						"border",
+						"border-3",
+						"border-secondary"
+					);
 				});
 				image.classList.add("border", "border-3", "border-secondary");
 			});
@@ -201,7 +220,6 @@
 					date: formData[4].value,
 				};
 
-				console.log(data);
 				$.ajax({
 					url: "/api/exercise-records",
 					type: "POST",
@@ -209,14 +227,14 @@
 					contentType: "application/json",
 
 					success: function (response) {
-						hideLoading();
 						console.log(response);
-							setTimeout(() => {
-								location.reload();
-							}, 1000);
+				
+							location.reload();
+					
 					},
 					error: function (err) {
 						console.log(err);
+						hideLoading();
 					},
 				});
 			});

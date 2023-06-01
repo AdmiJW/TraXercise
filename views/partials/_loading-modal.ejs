@@ -23,9 +23,11 @@
         modal.show();
     }
 
-    function hideLoading() {
+    async function hideLoading(){
+        setTimeout(await hideLoading, 1000);
         const modalElement = document.getElementById('loading-modal');
         const modal = bootstrap.Modal.getInstance(modalElement);
         modal.hide();
+        console.log("hidden");
     }
 </script>

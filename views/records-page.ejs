@@ -1,43 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <%- include('partials/_head.ejs') %>
-    
-    <!-- Include styles -->
-    <%- include('styles/_global.style.ejs') %>
-    <%- include('styles/_records-page.style.ejs') %>
+	<head>
+		<%- include('partials/_head.ejs') %>
 
-    <!-- Include custom scripts -->
-</head>
-<body>
+		<!-- Include styles -->
+		<%- include('styles/_global.style.ejs') %> <%-
+		include('styles/_records-page.style.ejs') %>
 
-    <!-- Container min height 100 vh : To push footer to the bottom -->
-    <div class="min-vh-100 d-flex flex-column">
+		<!-- Include custom scripts -->
+	</head>
+	<body>
+		<!-- Container min height 100 vh : To push footer to the bottom -->
+		<div class="min-vh-100 d-flex flex-column">
+			<!-- Loading Modal -->
+			<%- include('partials/_loading-modal.ejs') %>
 
-        <!-- Loading Modal -->
-        <%- include('partials/_loading-modal.ejs') %>
+			<!-- Navbar -->
+			<%- include('partials/_navbar.ejs') %>
 
-        <!-- Navbar -->
-        <%- include('partials/_navbar.ejs') %>
+			<!-- Content -->
+			<div class="flex-grow-1 d-flex justify-content-center">
+				<main
+					class="p-3 m-3 border rounded-3 shadow-sm"
+					style="
+						width: clamp(300px, 100%, 800px);
+						background-color: rgba(255, 255, 255, 0.95);
+					"
+				>
+					<h1 class="text-center px-3">My Records 🗒️</h1>
+					<hr class="mx-4" />
 
-        <!-- Content -->
-        <div class="flex-grow-1 d-flex justify-content-center">
-            <main 
-                class="p-3 m-3 border rounded-3 shadow-sm"
-                style="
-                    width: clamp(300px, 100%, 800px);
-                    background-color: rgba(255, 255, 255, 0.95);
-                "
-            >
-                <h1 class="text-center px-3">My Records 🗒️</h1>
-                <hr class="mx-4">
+					<form class="w-100" id="view-form">
+						<div class="card">
+							<div
+								class="card-body text-dark shadow bg-light rounded p-2"
+							>
+								<h5 class="card-title">
+									Provide your information to view exercise
+									record
+								</h5>
+								<p class="card-text">Your name:</p>
+								<input
+									type="text"
+									class="form-control"
+									name="name"
+									id="name"
+									aria-describedby="nameDesc"
+									required
+								/>
+								<button
+									type="submit"
+									class="btn btn-primary w-100 mt-2"
+								>
+									View Record 🗒️
+								</button>
+							</div>
+						</div>
+					</form>
 
-                <p>Enter your handle: [ ]</p>
-                <p>Search!</p>
-            </main>
-        </div>
-    </div>
+					<div id="resultSection" style="display: none">
+                       
+                    </div>
+				</main>
+			</div>
+		</div>
 
-    <%- include('partials/_footer.ejs') %>
-</body>
+		<%- include('partials/_footer.ejs') %>
+	</body>
+
+	<script>
+		const result_card =
+			'<div class="card mt-3">' +
+			'<h3 class="card-title text-center py-2"></h3>' +
+			'<div id="exerciseData" class="w-100 d-flex align-content-start flex-wrap p-4">' +
+            '</div>' +
+			"</div>" +
+			"</div>";
+
+	$(document).ready(function () {
+            $("#view-form").submit(function (event) {
+                showLoading();
+                event.preventDefault();
+                let name = $("#name").val();
+
+                $.ajax({
+                    url: "/api/exercise-records/" + name,
+                    type: "GET",
+                    contentType: "application/json",
+                    success: function (data) {
+                        $("#resultSection").show();
+                        $("#resultSection").empty();
+
+                        if (data.length == 0) {
+                            const no_records_card = $(result_card);
+                            no_records_card
+                                .find(".card-title")
+                                .text("No records found for " + name);
+                            $("#resultSection").append(no_records_card);
+                            hideLoading();
+                            return;
+                        }
+                        console.log(data);
+                        const records_card = $(result_card);
+                        records_card.find(".card-title").text("💾 " + data[0].name + "'s Exercise Records 💾");
+
+
+                        data.forEach(function (record) {
+                            
+                            records_card
+                                .find("#exerciseData")
+                                .append(
+                                    
+                                    '<div class="w-25 card-body text-dark shadow bg-secondary rounded p-2 m-2">' +
+                                    '<h5 class="card-title">' + new Date(record.date).toISOString().substring(0, 10) + '</h5>' +
+
+                                    "<p><strong>Exercise:</strong> " +
+                                    record.activity +
+                                    "<br>" +
+                                    "<strong>Exercise Type:</strong>" +
+                                    record.type +
+                                    "<br>" +
+                                    "<strong>Duration:</strong>" +
+                                    record.duration +
+                                    " minutes" +
+                                    "</p>"+
+                                    "</div>"
+                              
+                                );
+                            $("#resultSection").append(records_card);
+                        });
+
+                        hideLoading();
+                    },
+                    error: function (err) {
+                        console.error("Error:", err);
+                        $("#resultCard").hide();
+                        alert("Error: " + err.message);
+                        setTimeout(hideLoading, 5000);
+                    },
+                });
+            });
+        });
+
+	</script>
 </html>
