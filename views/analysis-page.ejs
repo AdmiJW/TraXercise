@@ -1,43 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <%- include('partials/_head.ejs') %>
 
-    <head>
-        <%- include('partials/_head.ejs') %>
+    <!-- Include styles -->
+    <%- include('styles/_global.style.ejs') %> <%-
+    include('styles/_records-page.style.ejs') %>
 
-            <!-- Include styles -->
-            <%- include('styles/_global.style.ejs') %>
-                <%- include('styles/_records-page.style.ejs') %>
+    <!-- Include custom scripts -->
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-                    <!-- Include custom scripts -->
-    </head>
+    <!-- Include Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css"
+    />
 
-    <body>
+    <!-- Include your custom styles -->
+    <style>
+      .chart-card {
+        margin: 20px;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
 
-        <!-- Container min height 100 vh : To push footer to the bottom -->
-        <div class="min-vh-100 d-flex flex-column">
+  <body>
+    <!-- Container min height 100 vh : To push footer to the bottom -->
+    <div class="min-vh-100 d-flex flex-column">
+      <!-- Loading Modal -->
+      <%- include('partials/_loading-modal.ejs') %>
 
-            <!-- Loading Modal -->
-            <%- include('partials/_loading-modal.ejs') %>
+      <!-- Navbar -->
+      <%- include('partials/_navbar.ejs') %>
 
-                <!-- Navbar -->
-                <%- include('partials/_navbar.ejs') %>
-
-                    <!-- Content -->
-                    <div class="flex-grow-1 d-flex justify-content-center">
-                        <main class="p-3 m-3 border rounded-3 shadow-sm" style="
-                    width: clamp(300px, 100%, 800px);
-                    background-color: rgba(255, 255, 255, 0.95);
-                ">
-                            <h1 class="text-center px-3">My Tracker 📊</h1>
-                            <hr class="mx-4">
-
-                            <p>Enter your handle: [ ]</p>
-                            <p>Search!</p>
-                        </main>
-                    </div>
+      <!-- Content -->
+      <div class="flex-grow-1 d-flex justify-content-center">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="chart-card">
+              <h1 class="text-center">Bar Chart 📊</h1>
+              <hr />
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="chart-card">
+              <h1 class="text-center">Line Chart 📈</h1>
+              <hr />
+              <canvas id="lineChart"></canvas>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <%- include('partials/_footer.ejs') %>
-    </body>
+    <%- include('partials/_footer.ejs') %>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Bar Chart
+      const barCanvas = document.getElementById("barChart");
+      new Chart(barCanvas, {
+        type: "bar",
+        data: {
+          labels: ["Label 1", "Label 2", "Label 3"],
+          datasets: [
+            {
+              label: "Data",
+              data: [10, 20, 30],
+              backgroundColor: "rgba(75, 192, 192, 0.6)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
 
+      // Line Chart
+      const lineCanvas = document.getElementById("lineChart");
+      new Chart(lineCanvas, {
+        type: "line",
+        data: {
+          labels: ["Label 1", "Label 2", "Label 3"],
+          datasets: [
+            {
+              label: "Data",
+              data: [50, 30, 40],
+              borderColor: "rgba(255, 99, 132, 0.6)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    });
+  </script>
 </html>
