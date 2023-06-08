@@ -3,7 +3,9 @@
 
     html {
         --primary-color: #3f51b5;
+        scroll-behavior: auto !important;
     }
+
 
     * {
         margin: 0;
@@ -14,8 +16,18 @@
     }
 
 
+    /* Background image for entire body */
+    body {
+        background-image: url("/images/gym.svg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
 
-    /* Hover underline effect class */
+
+
+    /* Hover underline effect class, mainly for navigation links */
     .hover-underline {
         display: inline-block;
         position: relative;

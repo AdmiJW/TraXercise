@@ -1,0 +1,58 @@
+
+<div class="card mb-5">
+    <div class="card-body text-dark shadow-sm bg-light rounded">
+
+        <h4 class="card-title fw-bold mb-4">
+            Step 3️⃣ : Exercise Details ⏱️
+        </h4>
+
+        <p class="card-text mb-4">
+            Please provide the details of your exercise:
+        </p>
+
+        
+        <!-- Exercise Name form group -->
+        <label for="activityName" class="form-label">
+            Activity:
+        </label>
+        <input
+            type="text"
+            class="form-control mb-2"
+            name="exerciseName"
+            id="activityName"
+            placeholder="Jogging"
+            required
+        />
+        <div class="d-flex flex-wrap mb-4 gap-2" id="suggestions"></div>
+        
+
+        <!-- Exercise Duration form group -->
+        <label for="activityDuration" class="form-label">
+            Exercise Duration (Minutes):
+        </label>
+        <input
+            type="number"
+            class="form-control mb-4"
+            name="exerciseDuration"
+            id="activityDuration"
+            value="30"
+            min="0"
+            max="1440"
+            required
+        />
+
+        
+        <!-- Exercise Date form group -->
+        <label for="activityDate" class="form-label">
+            Exercise Date:
+        </label>
+        <input
+            type="date"
+            class="form-control mb-4"
+            name="exerciseDate"
+            id="activityDate"
+            required
+        />
+
+    </div>
+</div>

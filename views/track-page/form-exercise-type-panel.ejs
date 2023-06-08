@@ -1,0 +1,104 @@
+
+<!-- Exercise Type Panel  -->
+<div class="card mb-4">
+    <div class="card-body text-dark shadow-sm bg-light rounded">
+
+        <h4 class="card-title fw-bold mb-4">
+            Step 2️⃣ : Exercise Type ⚽
+        </h4>
+
+        <label class="card-text mb-4">
+            Please select your exercise type:
+        </label>
+
+
+        <div class="mb-4 d-flex justify-content-around align-items-center text-center gap-4">
+            
+            <!-- Aerobic -->
+            <div class="text-center">
+                
+                <label for="aerobicType" class="mb-3 fs-4 fw-bold">
+                    Aerobic 🏃
+                </label>
+
+                <label>
+                    <input
+                        name="exerciseType"
+                        type="radio"
+                        class="btn-check"
+                        id="aerobicType"
+                        value="AEROBIC"
+                        required
+                    />
+
+                    <img
+                        src="/images/aerobic.gif"
+                        class="rounded-circle clickable-image"
+                        alt="Aerobic Exercise"
+                    />
+                </label>
+            </div>
+
+            <!-- Anaerobic -->
+            <div class="text-center">
+                
+                <label for="anerobicType" class="mb-3 fs-4 fw-bold">
+                    Anaerobic 🏋️
+                </label>
+
+                <label>
+                    <input
+                        name="exerciseType"
+                        type="radio"
+                        class="btn-check"
+                        id="anerobicType"
+                        value="ANAEROBIC"
+                        required
+                    />
+
+                    <img
+                        src="/images/anaerobic.gif"
+                        class="rounded-circle clickable-image"
+                        style="
+                            height: 100%;
+                            width: 100%;
+                            object-fit: contain;
+                        "
+                        alt="Anaerobic Exercise"
+                    />
+                </label>
+            </div>
+
+            <!-- Hybrid -->
+            <div class="text-center">
+
+                <label for="hybridType" class="mb-3 fs-4 fw-bold">
+                    Hybrid ⚽
+                </label>
+
+                <label>
+                    <input
+                        name="exerciseType"
+                        type="radio"
+                        class="btn-check"
+                        id="hybridType"
+                        value="HYBRID"
+                        required
+                    />
+
+                    <img
+                        src="/images/hybrid.gif"
+                        class="rounded-circle clickable-image"
+                        style="
+                            height: 100%;
+                            width: 100%;
+                            object-fit: contain;
+                        "
+                        alt="Hybrid Exercise"
+                    />
+                    
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

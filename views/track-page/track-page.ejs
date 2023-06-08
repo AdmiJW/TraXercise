@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include("../shared/_head.ejs") %>
+
+		<!-- Include styles -->
+		<%- include("../shared/_global.style.ejs") %> 
+		<%- include('track-page.style.ejs') %>
+
+		<!-- Include custom scripts -->
+		<%- include("track-page.script.ejs") %>
+	</head>
+
+	<body>
+		<!-- Container min height 100 vh : To push footer to the bottom -->
+		<div class="min-vh-100 d-flex flex-column">
+
+			<!-- Loading Modal -->
+			<%- include("../shared/_loading-modal.ejs") %>
+
+			<!-- Navbar -->
+			<%- include("../shared/_navbar.ejs") %>
+
+			<!-- Content -->
+			<div class="flex-grow-1 d-flex justify-content-center">
+				<main
+					class="p-4 m-3 mb-5 border rounded-3 shadow-sm"
+					style="
+						width: clamp(300px, 100%, 800px);
+						background-color: rgba(255, 255, 255, 0.95);
+					"
+				>
+					<h1 class="text-center px-3">Track Exercise 📝</h1>
+					<hr class="mx-4" />
+
+					<form class="w-100" id="tracker-form">
+
+						<%- include('form-name-panel.ejs') %>
+						<%- include('form-exercise-type-panel.ejs') %>
+						<%- include('form-exercise-details-panel.ejs') %>
+						
+						<button type="submit" class="btn btn-primary w-100 p-2">
+							Submit Record 📝
+						</button>
+					</form>
+				</main>
+			</div>
+		</div>
+
+		<%- include("../shared/_footer.ejs") %>
+	</body>
+
+</html>

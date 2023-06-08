@@ -1,0 +1,84 @@
+<script>
+
+
+    const suggestions = {
+        AEROBIC : [
+            "Walking", "Jogging", "Cycling", "Swimming", "Jumping Jacks", "Dancing",
+            "Aerobic Step Exercises", "Low-impact Aerobics", "Hiking", "Stair Climbing",
+        ],
+        ANAEROBIC: [
+            "Weight Lifting", "Push-ups", "Pull-ups", "Squats", "Lunges", "Crunches",
+            "Planks", "Bench Press", "Deadlifts", "Bicep Curls", "Tricep Extensions",
+        ],
+        HYBRID: [
+            "Circuit Training", "Tabata", "HIIT", "Crossfit", "Plyometrics",
+        ],
+    };
+
+
+    // On select exercise type, add suggestions that will auto-fill the activity name
+    // on click of the suggestion
+    function onExerciseTypeSelected(event) {
+        const inputField = $("#activityName");
+        const suggestionsDiv = $("#suggestions");
+        const type = event.target.value;
+
+        // Clear the suggestions div
+        suggestionsDiv.empty();
+
+        // Add the suggestions for the selected exercise type
+        suggestions[type].forEach((suggestion) => {
+            const badge = $(`<span class="badge bg-info">${suggestion}</span>`);
+            badge.click(() => inputField.val(suggestion));
+            badge.css("cursor", "pointer");
+            suggestionsDiv.append(badge);
+        });
+    }
+
+
+
+    function onFormSubmit(event) {
+        showLoading();
+        event.preventDefault();
+
+        let formData = $(this).serializeArray();
+
+        let data = {
+            name: formData[0].value,
+            type: formData[1].value,
+            activity: formData[2].value,
+            duration: parseInt(formData[3].value),
+            date: formData[4].value,
+        };
+
+        let onSuccess = function (response) {
+            console.log(response);
+            hideLoading();
+            location.reload();
+        };
+
+        let onError = function (err) {
+            console.log(err);
+            hideLoading();
+        };
+
+        $.ajax({
+            url: "/api/exercise-records",
+            type: "POST",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: onSuccess,
+            error: onError,
+        });
+    }
+
+
+
+
+    $(document).ready(()=> {
+        $("#tracker-form").submit(onFormSubmit);
+
+        $(".btn-check").change(onExerciseTypeSelected);
+    });
+
+</script>

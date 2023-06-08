@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%- include('partials/_head.ejs') %>
+    <%- include('../shared/_head.ejs') %>
 
     <!-- Include styles -->
-    <%- include('styles/_global.style.ejs') %> <%-
-    include('styles/_records-page.style.ejs') %>
+    <%- include('../shared/_global.style.ejs') %>
 
     <!-- Include custom scripts -->
+    
   </head>
 
   <body>
     <!-- Container min height 100 vh : To push footer to the bottom -->
     <div class="min-vh-100 d-flex flex-column">
       <!-- Loading Modal -->
-      <%- include('partials/_loading-modal.ejs') %>
+      <%- include('../shared/_loading-modal.ejs') %>
 
       <!-- Navbar -->
-      <%- include('partials/_navbar.ejs') %>
+      <%- include('../shared/_navbar.ejs') %>
 
       <!-- Content -->
       <div class="flex-grow-1 d-flex justify-content-center">
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <%- include('partials/_footer.ejs') %>
+    <%- include('../shared/_footer.ejs') %>
   </body>
 
   <!-- Include scripts -->
