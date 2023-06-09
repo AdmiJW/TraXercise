@@ -1,0 +1,76 @@
+
+<form id="analysis-form" class="mb-4">
+
+<div class="card">
+    <div class="card-body text-dark shadow-sm bg-light rounded">
+
+        <h4 class="card-title fw-bold mb-4">
+            👀 Analyze your exercise data 
+        </h4>
+
+        <label for="name" class="card-text mb-2">
+            Please enter your name: 
+        </label>
+
+        <input
+            type="text"
+            class="form-control mb-2"
+            name="name"
+            id="name"
+            placeholder="Qiqi"
+            aria-describedby="nameDesc"
+            required
+        />
+
+        <div id="nameDesc" class="form-text mb-3">
+            ⚠️ Use the name you've entered previously when you tracked your exercise.
+        </div>
+
+
+        <!-- Date range -->
+        <div class="row mb-3">
+
+            <div class="col">
+                <label for="dateFrom" class="card-text mb-1">
+                    Date from:
+                </label>
+
+                <input 
+                    name="dateFrom"
+                    id="dateFrom"
+                    type="date" 
+                    class="form-control" 
+                    placeholder="Date from" 
+                    aria-label="Date from"
+                    required
+                >
+            </div>
+
+            <div class="col">
+
+                <label for="dateTo" class="card-text mb-1">
+                    Date to:
+                </label>
+
+                <input 
+                    name="dateTo"
+                    id="dateTo"
+                    type="date" 
+                    class="form-control" 
+                    placeholder="dateTo" 
+                    aria-label="dateTo"
+                    required
+                >
+            </div>
+        </div>
+
+
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">
+            Analyze! 🔎
+        </button>
+
+    </div>
+</div>
+
+</form>

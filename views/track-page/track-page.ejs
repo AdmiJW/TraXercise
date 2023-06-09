@@ -23,27 +23,22 @@
 
 			<!-- Content -->
 			<div class="flex-grow-1 d-flex justify-content-center">
-				<main
-					class="p-4 m-3 mb-5 border rounded-3 shadow-sm"
-					style="
-						width: clamp(300px, 100%, 800px);
-						background-color: rgba(255, 255, 255, 0.95);
-					"
-				>
-					<h1 class="text-center px-3">Track Exercise 📝</h1>
-					<hr class="mx-4" />
+			<main class="main-container p-4 m-3 mb-5 border rounded-3 shadow-sm">
+				
+				<h1 class="text-center fw-bold px-3">Track Your Exercise 📝</h1>
+				<hr class="mx-4" />
 
-					<form class="w-100" id="tracker-form">
-
-						<%- include('form-name-panel.ejs') %>
-						<%- include('form-exercise-type-panel.ejs') %>
-						<%- include('form-exercise-details-panel.ejs') %>
-						
-						<button type="submit" class="btn btn-primary w-100 p-2">
-							Submit Record 📝
-						</button>
-					</form>
-				</main>
+				<form id="tracker-form">
+					<%- include('form-name-panel.ejs') %>
+					<%- include('form-exercise-type-panel.ejs') %>
+					<%- include('form-exercise-details-panel.ejs') %>
+					
+					<button type="submit" class="btn btn-primary w-100 p-2">
+						Submit Record 📝
+					</button>
+				</form>
+				
+			</main>
 			</div>
 		</div>
 

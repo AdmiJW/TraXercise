@@ -1,133 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <%- include('../shared/_head.ejs') %>
 
     <!-- Include styles -->
     <%- include('../shared/_global.style.ejs') %>
 
     <!-- Include custom scripts -->
-    
-  </head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <%- include('analysis-page.script.ejs') %>
 
-  <body>
+</head>
+
+
+<body>
     <!-- Container min height 100 vh : To push footer to the bottom -->
     <div class="min-vh-100 d-flex flex-column">
-      <!-- Loading Modal -->
-      <%- include('../shared/_loading-modal.ejs') %>
+        <!-- Loading Modal -->
+        <%- include('../shared/_loading-modal.ejs') %>
 
-      <!-- Navbar -->
-      <%- include('../shared/_navbar.ejs') %>
+        <!-- Navbar -->
+        <%- include('../shared/_navbar.ejs') %>
 
-      <!-- Content -->
-      <div class="flex-grow-1 d-flex justify-content-center">
-        <main
-          class="p-3 m-3 border rounded-3 shadow-sm"
-          style="
-            width: clamp(300px, 100%, 800px);
-            background-color: rgba(255, 255, 255, 0.95);
-          "
-        >
-          <h1 class="text-center px-3">Analysis Tracker 📊</h1>
-          <hr class="mx-4" />
+        <!-- Content -->
+        <div class="flex-grow-1 d-flex justify-content-center">
+        <main class="main-container p-4 m-3 mb-5 border rounded-3 shadow-sm">
 
-          <form class="w-100" id="view-form">
-            <div class="card">
-              <div class="card-body text-dark shadow bg-light rounded p-2">
-                <h5 class="card-title">
-                  Provide your information to view exercise analysis!
-                </h5>
-                <p class="card-text">Your name:</p>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="name"
-                  id="name"
-                  aria-describedby="nameDesc"
-                  required
-                />
-                <button type="submit" class="btn btn-primary w-100 mt-2">
-                  View Analysis 🗒️
-                </button>
-              </div>
-            </div>
-          </form>
+            <h1 class="text-center fw-bold px-3">Exercise Analyzer 📊</h1>
+            <hr class="mx-4" />
 
-          <div id="resultSection" class="mt-3 d-flex flex-wrap">
-            <div class="card flex-grow-1">
-              <div class="card-body">
-                <h5 class="card-title">Bar Chart</h5>
-                <canvas id="barChart"></canvas>
-              </div>
-            </div>
+            <%- include('form-panel.ejs') %>
+            <%- include('bar-chart.ejs') %>
+            <%- include('line-chart.ejs') %>
+            <%- include('word-cloud.ejs') %>
 
-            <div class="card flex-grow-1 mt-3">
-              <div class="card-body">
-                <h5 class="card-title">Line Chart</h5>
-                <canvas id="lineChart"></canvas>
-              </div>
-            </div>
-          </div>
         </main>
-      </div>
+        </div>
+
     </div>
 
     <%- include('../shared/_footer.ejs') %>
-  </body>
+</body>
 
-  <!-- Include scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      // Bar Chart
-      const barCanvas = document.getElementById("barChart");
-      new Chart(barCanvas, {
-        type: "bar",
-        data: {
-          labels: ["Label 1", "Label 2", "Label 3"],
-          datasets: [
-            {
-              label: "Data",
-              data: [10, 20, 30],
-              backgroundColor: "rgba(75, 192, 192, 0.6)",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
-      });
-
-      // Line Chart
-      const lineCanvas = document.getElementById("lineChart");
-      new Chart(lineCanvas, {
-        type: "line",
-        data: {
-          labels: ["Label 1", "Label 2", "Label 3"],
-          datasets: [
-            {
-              label: "Data",
-              data: [50, 30, 40],
-              borderColor: "rgba(255, 99, 132, 0.6)",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
-      });
-    });
-  </script>
 </html>

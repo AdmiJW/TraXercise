@@ -1,0 +1,124 @@
+
+<script>
+
+
+    function initializeDateFilter() {
+        const dateFrom = $("#dateFrom");
+        const dateTo = $("#dateTo");
+
+        const today = new Date().toISOString().split("T")[0];
+        const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .split("T")[0];
+
+        dateFrom.val(lastWeek);
+        dateTo.val(today);
+    }
+
+
+
+    function onFormSubmit(event) {
+        showLoading();
+        event.preventDefault();
+
+        let formData = $(this).serializeArray();
+        const name = formData[0].value;
+        const dateFrom = formData[1].value;
+        const dateTo = formData[2].value;
+
+        let onSuccess = function (data) {
+            console.log(data);
+            hideLoading();
+
+            renderBarChart(data);
+            renderLineChart(data);
+
+        };
+
+        let onError = function (err) {
+            console.log(err);
+            hideLoading();
+        };
+
+        $.ajax({
+            url: `/api/exercise-records/${name}?dateFrom=${dateFrom}&dateTo=${dateTo}`,
+            type: "GET",
+            contentType: "application/json",
+            success: onSuccess,
+            error: onError,
+        });
+    }
+
+
+    function renderBarChart(data) {
+        const barCanvas = document.getElementById("barChart");
+
+        const options = {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        };
+
+        const chartData = {
+            labels: ["Label 1", "Label 2", "Label 3"],
+            datasets: [
+                {
+                    label: "Data",
+                    data: [10, 20, 30],
+                    backgroundColor: "rgba(75, 192, 192, 0.6)",
+                    borderWidth: 1,
+                },
+            ],
+        };
+
+        new Chart(barCanvas, {
+            type: "bar",
+            data: chartData,
+            options: options,
+        });
+    }
+
+
+    function renderLineChart(data) {
+        const lineCanvas = document.getElementById("lineChart");
+
+        const options = {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        };
+
+        const chartData = {
+            labels: ["Label 1", "Label 2", "Label 3"],
+            datasets: [
+                {
+                    label: "Data",
+                    data: [50, 30, 40],
+                    borderColor: "rgba(255, 99, 132, 0.6)",
+                    borderWidth: 1,
+                },
+            ],
+        };
+
+        new Chart(lineCanvas, {
+            type: "line",
+            data: chartData,
+            options: options,
+        });
+    }
+
+
+    $(document).ready(()=> {
+        initializeDateFilter();
+        $("#analysis-form").submit(onFormSubmit);
+    });
+
+
+
+</script>
