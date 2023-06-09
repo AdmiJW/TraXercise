@@ -1,6 +1,5 @@
 <script>
 
-
     const suggestions = {
         AEROBIC : [
             'Badminton', 'Basketball', 'Cycling', 'Aerobic dance',
@@ -20,6 +19,15 @@
             "Crossfit", "Plyometrics", "Other",
         ],
     };
+
+
+    function initializeDateField() {
+        const dateField = $("#activityDate");
+        const today = new Date();
+        const todayString = today.toISOString().split("T")[0];
+        dateField.val(todayString);
+    }
+
 
 
     // On select exercise type, add suggestions that will auto-fill the activity name
@@ -83,8 +91,8 @@
 
     $(document).ready(()=> {
         $("#tracker-form").submit(onFormSubmit);
-
         $(".btn-check").change(onExerciseTypeSelected);
+        initializeDateField();
     });
 
 </script>
