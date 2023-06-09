@@ -4,11 +4,17 @@
 <head>
     <%- include('../shared/_head.ejs') %>
 
+    <!-- D3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@5.8.0/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.min.js"></script>
+    <!-- C3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/c3@0.7.20/c3.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/c3@0.7.20/c3.min.css" rel="stylesheet">
+
     <!-- Include styles -->
     <%- include('../shared/_global.style.ejs') %>
 
     <!-- Include custom scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <%- include('analysis-page.script.ejs') %>
 
 </head>

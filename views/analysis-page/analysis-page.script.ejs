@@ -1,20 +1,28 @@
 
 <script>
 
+    const exerciseTypes = ["AEROBIC", "ANAEROBIC", "HYBRID"];
+
+
+    //==========================
+    // Events and UI logics
+    //==========================
+    $(document).ready(()=> {
+        initializeDateFilter();
+        $("#analysis-form").submit(onFormSubmit);
+    });
+
 
     function initializeDateFilter() {
         const dateFrom = $("#dateFrom");
         const dateTo = $("#dateTo");
 
         const today = new Date().toISOString().split("T")[0];
-        const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .split("T")[0];
+        const lastMonth = new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split("T")[0];
 
-        dateFrom.val(lastWeek);
+        dateFrom.val(lastMonth);
         dateTo.val(today);
     }
-
 
 
     function onFormSubmit(event) {
@@ -27,12 +35,14 @@
         const dateTo = formData[2].value;
 
         let onSuccess = function (data) {
-            console.log(data);
             hideLoading();
 
-            renderBarChart(data);
-            renderLineChart(data);
+            data = transformDates(data);
+            const weeklyData = processDataByWeekly(data);
 
+            renderBarChart(weeklyData);
+            renderLineChart(weeklyData);
+            renderWordCloud(data);
         };
 
         let onError = function (err) {
@@ -50,75 +60,180 @@
     }
 
 
-    function renderBarChart(data) {
-        const barCanvas = document.getElementById("barChart");
+    
+    //==========================
+    // Data Processing Pipelines
+    //==========================
 
-        const options = {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
+    // Transform all the dates in the data to Date objects
+    function transformDates(data) {
+        return data.map((record) => ({ ...record, date: new Date(record.date) }));
+    }
+
+
+    /*  Aggregate data based on weekly basis.
+        Result will be an object with the following structure:
+
+        {
+            startOfWeek: {
+                startOfWeek: Date,
+                AEROBIC: X
+                ANAEROBIC: Y
+                HYBRID: Z
             },
-        };
+            ...
+        }
+    */
+    function processDataByWeekly(data) {
+        return data.reduce((acc, record) => {
+            const type = record.type;
+            const duration = record.duration;
+            const date = record.date;
+            const startOfWeek = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
 
-        const chartData = {
-            labels: ["Label 1", "Label 2", "Label 3"],
-            datasets: [
-                {
-                    label: "Data",
-                    data: [10, 20, 30],
-                    backgroundColor: "rgba(75, 192, 192, 0.6)",
-                    borderWidth: 1,
+            if (!acc[startOfWeek]) acc[startOfWeek] = { 
+                startOfWeek: startOfWeek,
+                AEROBIC: 0, ANAEROBIC: 0, HYBRID: 0 
+            };
+
+            acc[startOfWeek][type] += duration;
+            return acc;
+        }, {});
+    }
+
+
+    // Returns an array of objects with the following structure:
+    // { text: 'RUNNING', size: X }
+    function groupDurationByActivity(data) {
+        const aggregate = {};
+
+        data.forEach((record) => {
+            const type = record.activity;
+            const duration = record.duration;
+
+            if (!aggregate[type]) aggregate[type] = 0;
+            aggregate[type] += duration;
+        });
+
+        return Object.keys(aggregate).map((key) => ({ text: key, size: aggregate[key] }));
+    }
+
+
+    // Returns the columns by exercise type for C3.js to render the chart
+    function getColumnsByWeek(data) {
+        const values = Object.values(data);
+
+        return [
+            ['x', ...values.map(d => d.startOfWeek) ],
+            ['AEROBIC', ...values.map((record) => record.AEROBIC)],
+            ['ANAEROBIC', ...values.map((record) => record.ANAEROBIC)],
+            ['HYBRID', ...values.map((record) => record.HYBRID)],
+        ];
+    }
+
+    
+    // Get the tick format for the x-axis time series
+    function getTickFormat() {
+        return (d)=> {
+            const startOfWeek = d3.timeFormat('%d %b')(d);
+            const endOfWeek = d3.timeFormat('%d %b')(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 6));
+            return `${startOfWeek} - ${endOfWeek}`;
+        };
+    }
+
+
+    function renderBarChart(data) {
+        const chart = c3.generate({
+            bindto: '#barChart',
+            data: {
+                type: 'bar',
+                x: 'x',
+                columns: getColumnsByWeek(data),
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    label: { text: 'Week', position: 'outer-center' },
+                    tick: getTickFormat(),
                 },
-            ],
-        };
-
-        new Chart(barCanvas, {
-            type: "bar",
-            data: chartData,
-            options: options,
+                y: { label: { text: 'Duration (min)', position: 'outer-middle' } },
+            },
         });
     }
 
 
     function renderLineChart(data) {
-        const lineCanvas = document.getElementById("lineChart");
-
-        const options = {
-            responsive: true,
-            scales: {
+        const chart = c3.generate({
+            bindto: '#lineChart',
+            data: {
+                type: 'line',
+                x: 'x',
+                columns: getColumnsByWeek(data),
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    label: { text: 'Week', position: 'outer-center' },
+                    tick: getTickFormat(),
+                },
                 y: {
-                    beginAtZero: true,
+                    label: { text: 'Duration (min)', position: 'outer-middle' },
                 },
             },
-        };
-
-        const chartData = {
-            labels: ["Label 1", "Label 2", "Label 3"],
-            datasets: [
-                {
-                    label: "Data",
-                    data: [50, 30, 40],
-                    borderColor: "rgba(255, 99, 132, 0.6)",
-                    borderWidth: 1,
-                },
-            ],
-        };
-
-        new Chart(lineCanvas, {
-            type: "line",
-            data: chartData,
-            options: options,
         });
     }
 
 
-    $(document).ready(()=> {
-        initializeDateFilter();
-        $("#analysis-form").submit(onFormSubmit);
-    });
 
+    function renderWordCloud(data) {
+        const colors = d3.scaleOrdinal(d3.schemeCategory10);
+        const size = { width: 800, height: 400 };
+        const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+        const aggregate = groupDurationByActivity(data);
 
+        // Scale the size of the words based on the duration
+        const scale = d3.scaleLinear()
+            .domain([0, d3.max(aggregate, d => d.size)])
+            .range([20, 100]);
+        aggregate.forEach(d => d.size = scale(d.size));
+        
+        // Clear the word cloud div
+        d3.select("#wordCloud").selectAll("*").remove();
+
+        // Create the svg element
+        const svg = d3
+            .select("#wordCloud")
+            .append("svg")
+            .attr('viewBox', [0, 0, size.width, size.height])
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        // Create the layout and start the algorithm
+        const layout = d3.layout
+            .cloud()
+            .size([size.width, size.height])
+            .words(aggregate)
+            .padding(5)
+            .rotate(() => ~~(Math.random() * 2) * 90)
+            .fontSize((d) => d.size)
+            .on("end", draw);
+        layout.start();
+
+        // Done callback - Draw the words on the svg
+        function draw(words) {
+            svg.append("g")
+                .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                .selectAll("text")
+                .data(words)
+                .enter()
+                .append("text")
+                .style("font-size", (d) => d.size + "px")
+                .style("fill", (d, i) => colors(i))
+                .attr("text-anchor", "middle")
+                .style("font-family", "Impact")
+                .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+                .text((d) => d.text);
+        }
+    }
 
 </script>
