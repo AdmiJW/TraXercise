@@ -1,0 +1,289 @@
+<script>
+    
+    const result_card =
+        '<div class="card mb-4">' +
+        '<div class="card-body text-dark shadow-sm bg-light rounded">' +
+        '<h3 class="card-title text-center fw-bold mb-4"></h3>' +
+        '<div id="exerciseData" class="d-flex align-content-start justify-content-center flex-wrap gap-2">' +
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        "</div>";
+
+
+    const onError = (err) => {
+        console.error("Error:", err);
+        alert("Error: " + err.message);
+        $("#resultCard").hide();
+        hideLoading();
+    };
+
+
+
+    
+    function deleteExercise(id) {
+        $.ajax({
+            url: "/api/exercise-records/" + id,
+            type: "DELETE",
+            contentType: "application/json",
+            success: function (data) {
+                $("#resultSection").empty();
+                $("#view-form").submit();
+            },
+            error: onError,
+        });
+    }
+
+
+
+
+    function updateExercise(id) {
+        // Show modal
+        $("#updateModal").modal("show");
+
+        // Get exercise data and populate modal as form
+        $.ajax({
+            url: "/api/exercise-records/one/" + id,
+            type: "GET",
+            contentType: "application/json",
+            success: function (data) {
+                console.log(data);
+                $("#updateModal .modal-title").text("Update Exercise");
+                $("#updateModal .modal-body").empty();
+                $("#updateModal .modal-body").append(getUpdateForm(data));
+
+                // Make the data.type checked in the radio button
+                $("#updateModal input[name='type'][value='" + data.type + "']").prop(
+                    "checked",
+                    true
+                );
+
+                // Attach submit event to form
+                $("#updateForm").submit(function (event) {
+                    event.preventDefault();
+                    let name = $("#name").val();
+                    let type = $("input[name='type']:checked").val();
+                    let activity = $("#activity").val();
+                    let duration = $("#duration").val();
+                    let date = $("#date").val();
+
+                    $.ajax({
+                        url: "/api/exercise-records/" + id,
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            name: name,
+                            type: type,
+                            activity: activity,
+                            duration: parseInt(duration),
+                            date: date,
+                        }),
+                        success: function (data) {
+                            console.log(data);
+                            $("#updateModal").modal("hide");
+                            $("#resultSection").empty();
+                            $("#view-form").submit();
+                        },
+                        error: function (error) {
+                            console.log(type);
+                            console.log(duration);
+                            console.log(error);
+                        },
+                    });
+                });
+            },
+            error: onError,
+        });
+    }
+
+
+    function getRecords(name) {
+        $.ajax({
+            url: "/api/exercise-records/" + name,
+            type: "GET",
+            contentType: "application/json",
+            success: function (data) {
+                $("#resultSection").show();
+                $("#resultSection").empty();
+
+                const records_card = $(result_card);
+
+                // No records found
+                if (data.length == 0) {
+                    records_card.find(".card-title").text("😢 No records found for " + name);
+                    $("#resultSection").append(records_card);
+                    hideLoading();
+                    return;
+                }
+                
+                // Records found
+                records_card.find(".card-title").text("💾 " + data[0].name + "'s Exercise Records");
+
+                data.forEach((record)=> {
+                    records_card.find("#exerciseData").append(getRecordCard(record));
+                    $("#resultSection").append(records_card);
+                });
+
+                hideLoading();
+            },
+            error: onError,
+        });
+    }
+
+
+    function getRecordCard(record) {
+        return `
+        <div class='card'>
+            <div class="card-body text-dark shadow-sm bg-light rounded">
+                <h5 class="card-title">
+                    📃 ${new Date(record.date).toISOString().substring(0, 10)}
+                </h5>
+
+                <p>
+                    <strong>Exercise: </strong> ${record.activity} <br>
+                    <strong>Type: </strong> ${record.type} <br>
+                    <strong>Duration: </strong> ${record.duration} minutes
+                </p>
+
+                <button 
+                    type="button" 
+                    class="btn btn-sm btn-primary mt-1" 
+                    data-toggle="modal" 
+                    data-target="#updateModal" 
+                    onclick="updateExercise('${record.id}')"
+                > 
+                    Update 🗒️
+                </button>
+
+                <button 
+                    type="button" 
+                    class="btn btn-sm btn-danger mt-1" 
+                    onclick="deleteExercise('${record.id}')"
+                >
+                    Delete 🗑️
+                </button>
+            </div>
+        </div>
+        `;
+    }
+
+
+    function getUpdateForm(record) {
+        return `
+        <form id='updateForm'>
+            <div class='form-group'>
+                <input type='hidden' class='form-control' id='name' disabled value='${record.name}'>
+            </div>
+
+            <div class='form-group mb-3'>
+                <label for='type' class='fw-bold mb-2'>Type 🧩</label>
+
+                <div class='form-check'>
+                    <input class='form-check-input' type='radio' name='type' id='AEROBIC' value='AEROBIC'>
+                    <label class='form-check-label' for='AEROBIC'>
+                        Aerobic
+                    </label>
+                </div>
+                
+                <div class='form-check'>
+                    <input class='form-check-input' type='radio' name='type' id='ANAEROBIC' value='ANAEROBIC'>
+                    <label class='form-check-label' for='ANAEROBIC'>
+                        Anaerobic
+                    </label>
+                </div>
+
+                <div class='form-check'>
+                    <input class='form-check-input' type='radio' name='type' id='HYBRID' value='HYBRID'>
+                    <label class='form-check-label' for='HYBRID'>
+                        Hybrid
+                    </label>
+                </div>
+            </div>
+
+            <div class='form-group mb-3'>
+                <label for='activity' class='fw-bold mb-2'>Activity 🏃🏻</label>
+                <input type='text' class='form-control' id='activity' value='${record.activity}'>
+            </div>
+
+            <div class='form-group mb-3'>
+                <label for='duration' class='fw-bold mb-2'>Duration ⌚</label>
+                <input type='number' class='form-control' id='duration' value='${record.duration}'>
+            </div>
+
+            <div class='form-group mb-3'>
+                <label for='date' class='fw-bold mb-2'>Date 📅</label>
+                <input type='date' class='form-control' id='date' value='${new Date(record.date).toISOString().substring(0, 10)}'>
+            </div>
+
+            <button type='submit' class='btn btn-primary'>Update</button>
+
+        </form>
+        `;
+
+
+
+        return '<form id="updateForm">' +
+        '<div class="form-group">' +
+        '<input type="hidden" class="form-control" id="name" disabled value="' +
+        data.name +
+        '">' +
+        "</div>" +
+        // radio option for type
+        '<div class="form-group">' +
+        '<label for="type">Type</label>' +
+        '<div class="form-check">' +
+        '<input class="form-check-input" type="radio" name="type" id="AEROBIC" value="AEROBIC">' +
+        '<label class="form-check-label" for="AEROBIC">' +
+        "Aerobic" +
+        "</label>" +
+        "</div>" +
+        '<div class="form-check">' +
+        '<input class="form-check-input" type="radio" name="type" id="ANAEROBIC" value="ANAEROBIC">' +
+        '<label class="form-check-label" for="ANAEROBIC">' +
+        "Anaerobic" +
+        "</label>" +
+        "</div>" +
+        '<div class="form-check">' +
+        '<input class="form-check-input" type="radio" name="type" id="HYBRID" value="HYBRID">' +
+        '<label class="form-check-label" for="HYBRID">' +
+        "Hybrid" +
+        "</label>" +
+        "</div>" +
+        "</div>" +
+        // activity
+        '<div class="form-group">' +
+        '<label for="activity">Activity</label>' +
+        '<input type="text" class="form-control" id="activity" value="' +
+        data.activity +
+        '">' +
+        "</div>" +
+        '<div class="form-group">' +
+        '<label for="duration">Duration</label>' +
+        '<input type="number" class="form-control" id="duration" value="' +
+        data.duration +
+        '">' +
+        "</div>" +
+        '<div class="form-group">' +
+        '<label for="date">Date</label>' +
+        '<input type="date" class="form-control" id="date" value="' +
+        new Date(data.date).toISOString().substring(0, 10) +
+        '">' +
+        "</div>" +
+        '<button type="submit" class="btn btn-primary">Update</button>' +
+        "</form>"
+    }
+
+
+    function onViewFormSubmit(event) {
+        showLoading();
+        event.preventDefault();
+        let name = $("#name").val();
+        getRecords(name);
+    }
+
+
+
+    $(document).ready(function () {
+        $("#view-form").submit(onViewFormSubmit);
+    });
+</script>
