@@ -8,6 +8,17 @@ import { HttpException, HttpStatusCode } from "@/exceptions/http-exception.excep
 
 const prisma = new PrismaClient();
 
+export async function getExerciseRecord(id: string) {
+    try {
+        const record = await prisma.exerciseRecord.findUnique({ where: { id }});
+        return record;
+    }
+    catch (err) {
+        throwNotFoundError(err);
+        throw err;
+    }
+}
+
 
 export async function getExerciseRecords(
     name: string,

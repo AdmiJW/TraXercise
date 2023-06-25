@@ -6,7 +6,26 @@ import { ExerciseRecordRequestDto } from "@/dto/exercise-record.request.dto";
 import { HttpException, HttpStatusCode } from "@/exceptions/http-exception.exception";
 
 
+export async function getExerciseRecord(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+) {
+    const { id } = request.params;
 
+    if (!id) return next(new HttpException({
+        statusCode: HttpStatusCode.BAD_REQUEST,
+        error: "Bad request",
+        message: "Missing id parameter",
+    }));
+
+    try {
+        const res = await ExerciseRecordService.getExerciseRecord(id);
+        response.json(res);
+    } catch (err) {
+        next(err);
+    }
+}
 
 export async function getExerciseRecords(
     request: Request, 

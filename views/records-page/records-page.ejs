@@ -59,6 +59,23 @@
 						</div>
 					</form>
 
+					<!-- Update Modal -->
+					<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+							  <div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Update Exercise</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								  <span aria-hidden="true">&times;</span>
+								</button>
+							  </div>
+							  <div class="modal-body">
+								
+							  </div>
+							</div>
+						</div>
+					</div>
+
 					<div id="resultSection" style="display: none"></div>
 				</main>
 			</div>
@@ -92,6 +109,114 @@
 					console.log(error);
 				},
 			});
+		}
+
+		function updateExercise(id) {
+			//show modal
+			$("#updateModal").modal("show");
+			//get exercise data and populate modal as form
+			$.ajax({
+				url: "/api/exercise-records/one/" + id,
+				type: "GET",
+				contentType: "application/json",
+				success: function (data) {
+					console.log(data);
+					$("#updateModal .modal-title").text("Update Exercise");
+					$("#updateModal .modal-body").empty();
+					$("#updateModal .modal-body").append(
+						'<form id="updateForm">' +
+							'<div class="form-group">' +
+							'<input type="hidden" class="form-control" id="name" disabled value="' +
+							data.name +
+							'">' +
+							"</div>" +
+							// radio option for type
+							'<div class="form-group">' +
+							'<label for="type">Type</label>' +
+							'<div class="form-check">' +
+							'<input class="form-check-input" type="radio" name="type" id="AEROBIC" value="AEROBIC">' +
+							'<label class="form-check-label" for="AEROBIC">' +
+							"Aerobic" +
+							"</label>" +
+							"</div>" +
+							'<div class="form-check">' +
+							'<input class="form-check-input" type="radio" name="type" id="ANAEROBIC" value="ANAEROBIC">' +
+							'<label class="form-check-label" for="ANAEROBIC">' +
+							"Anaerobic" +
+							"</label>" +
+							"</div>" +
+							'<div class="form-check">' +
+							'<input class="form-check-input" type="radio" name="type" id="HYBRID" value="HYBRID">' +
+							'<label class="form-check-label" for="HYBRID">' +
+							"Hybrid" +
+							"</label>" +
+							"</div>" +
+							"</div>" +
+							// activity
+							'<div class="form-group">' +
+							'<label for="activity">Activity</label>' +
+							'<input type="text" class="form-control" id="activity" value="' +
+							data.activity +
+							'">' +
+							"</div>" +
+							'<div class="form-group">' +
+							'<label for="duration">Duration</label>' +
+							'<input type="number" class="form-control" id="duration" value="' +
+							data.duration +
+							'">' +
+							"</div>" +
+							'<div class="form-group">' +
+							'<label for="date">Date</label>' +
+							'<input type="date" class="form-control" id="date" value="' +
+							new Date(data.date).toISOString().substring(0, 10) +
+							'">' +
+							"</div>" +
+							'<button type="submit" class="btn btn-primary">Update</button>' +
+							"</form>"
+					);
+					//make the data.type checked in the radio button
+					$("#updateModal input[name='type'][value='" + data.type + "']").prop(
+						"checked",
+						true
+					);
+					$("#updateForm").submit(function (event) {
+						event.preventDefault();
+						let name = $("#name").val();
+						let type = $("input[name='type']:checked").val();
+						let activity = $("#activity").val();
+						let duration = $("#duration").val();
+						let date = $("#date").val();
+
+						$.ajax({
+							url: "/api/exercise-records/" + id,
+							type: "PUT",
+							contentType: "application/json",
+							data: JSON.stringify({
+								name: name,
+								type: type,
+								activity: activity,
+								duration: parseInt(duration),
+								date: date,
+							}),
+							success: function (data) {
+								console.log(data);
+								$("#updateModal").modal("hide");
+								$("#resultSection").empty();
+								$("#view-form").submit();
+							},
+							error: function (error) {
+								console.log(type);
+								console.log(duration);
+								console.log(error);
+							},
+						});
+					});
+				},
+				error: function (error) {
+					console.log(error);
+				},
+			});
+			
 		}
 
 		$(document).ready(function () {
@@ -145,6 +270,9 @@
 										record.duration +
 										" minutes" +
 										"</p>" +
+										'<button type="button" class="btn btn-primary w-100 mt-2" data-toggle="modal" data-target="#updateModal" onclick="updateExercise(\'' +
+										record.id +
+										"')\"> Update 🗒️</button>" +
 										'<button type="button" class="btn btn-danger w-100 mt-2" onclick="deleteExercise(\'' +
 										record.id +
 										"')\"> Delete 🗒️</button>" +

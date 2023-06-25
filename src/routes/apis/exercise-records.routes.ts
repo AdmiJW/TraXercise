@@ -9,6 +9,10 @@ import { ExerciseRecordRequestDto } from "@/dto/exercise-record.request.dto";
 
 export const exerciseRecordsApiRouter = Express.Router();
 
+exerciseRecordsApiRouter.get(
+    '/one/:id',
+    ExerciseRecordApiController.getExerciseRecord,
+);
 
 exerciseRecordsApiRouter.get(
     '/:name',
